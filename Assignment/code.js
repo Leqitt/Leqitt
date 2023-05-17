@@ -1,0 +1,24 @@
+var ball = document.getElementById("ball");
+var container = document.getElementById("container");
+
+var x = 250; // initial position of the ball
+var y = 50;
+var vy = 0; // initial velocity of the ball
+
+function update() {
+  // update the position of the ball
+  y += vy;
+  vy += 0.1; // acceleration due to gravity
+
+  // check if the ball has reached the bottom
+  if (y + 50 >= container.offsetHeight) {
+    // reverse the velocity to make the ball bounce
+    vy = -vy * 0.8;
+  }
+
+  // update the position of the ball element
+  ball.style.top = y + "px";
+  ball.style.left = x + "px";
+}
+
+setInterval(update, 10); // run the simulation every 10 milliseconds
