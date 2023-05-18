@@ -1,29 +1,22 @@
 <!DOCTYPE html>
 <link rel="stylesheet" type="text/css" href="code.css">
+<!DOCTYPE html>
 <html>
-  <head>
-    <h1>Physics Simulation</h1>
-    <style>
-      #container {
-        width: 500px;
-        height: 500px;
-        border: 1px solid black;
-        position: relative;
-      }
-      #ball {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background-color: red;
-        position: absolute;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="container">
-      <div id="ball"></div>
-    </div>
-    <script src="code.js"></script>
-  </body>
+<head>
+  <title>Ball Drop Simulation</title>
+  <h1><u>Physics Simulation</u></h1>
+  <style>
+    #canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <label for="gravity">Gravity:</label>
+  <input type="range" id="gravity" min="1" max="20" value="10"><br><br>
+  <canvas id="canvas" width="400" height="400"></canvas>
+
+  <script src="code.js"></script>
+</body>
 </html>
 

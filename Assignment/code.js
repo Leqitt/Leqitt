@@ -1,24 +1,42 @@
-var ball = document.getElementById("ball");
-var container = document.getElementById("container");
+// Ball properties
+var ball = {
+  x: 200,
+  y: 0,
+  radius: 20,
+  color: "red",
+  velocity: 0,
+};
 
-var x = 250; // initial position of the ball
-var y = 50;
-var vy = 0; // initial velocity of the ball
+// Canvas properties
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+var gravityInput = document.getElementById("gravity");
 
+// Update ball position based on gravity and bouncing
 function update() {
-  // update the position of the ball
-  y += vy;
-  vy += 0.1; // acceleration due to gravity
+  // Clear the canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // check if the ball has reached the bottom
-  if (y + 50 >= container.offsetHeight) {
-    // reverse the velocity to make the ball bounce
-    vy = -vy * 0.8;
+  // Update ball position
+  ball.y += ball.velocity;
+  ball.velocity += parseFloat(gravityInput.value) / 100;
+
+  // Check for bouncing
+  if (ball.y + ball.radius >= canvas.height) {
+    ball.y = canvas.height - ball.radius;
+    ball.velocity *= -0.8; // Reduce the velocity on bouncing
   }
 
-  // update the position of the ball element
-  ball.style.top = y + "px";
-  ball.style.left = x + "px";
+  // Draw the ball
+  ctx.beginPath();
+  ctx.arc(ball.x, ball.y, ball.radius, 0, 2 * Math.PI);
+  ctx.fillStyle = ball.color;
+  ctx.fill();
+  ctx.closePath();
+
+  // Request animation frame
+  requestAnimationFrame(update);
 }
 
-setInterval(update, 10); // run the simulation every 10 milliseconds
+// Start the simulation
+update();
