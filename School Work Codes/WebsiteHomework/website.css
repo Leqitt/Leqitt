@@ -1,5 +1,17 @@
 h1 {
     color: rgb(0, 0, 0);
-    text-align: center;
     width: 600px;
+    vertical-align: top;
 }
+img {
+    padding: 1px;
+    width: 100px;
+    height: 100px;
+}
+.city {
+    background-color: rgb(1, 74, 6);
+    color: white;
+    border: 2px solid black;
+    margin: 0px;
+    padding: 30px;
+  }
