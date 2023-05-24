@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<link rel="stylesheet" type="text/css" href="code.css">
-<!DOCTYPE html>
 <html>
 <head>
-  <title>Ball Drop Simulation</title>
-  <h1><u>Physics Simulation</u></h1>
-  <style>
-    #canvas {
-      border: 1px solid black;
-    }
-  </style>
+    <title>Chemistry Simulation</title>
+    <link rel="stylesheet" type="text/css" href="code.css">
 </head>
 <body>
-  <label for="gravity">Gravity:</label>
-  <input type="range" id="gravity" min="1" max="20" value="10"><br><br>
-  <canvas id="canvas" width="400" height="400"></canvas>
+    <div class="controls">
+        <label for="temperatureRange">Temperature:</label>
+        <input type="range" id="temperatureRange" min="0" max="100" value="50">
+        <span id="temperatureValue">50</span>
 
-  <script src="code.js"></script>
+        <label for="stateSelect">State of Matter:</label>
+        <select id="stateSelect">
+            <option value="solid">Solid</option>
+            <option value="liquid">Liquid</option>
+            <option value="gas">Gas</option>
+        </select>
+    </div>
+
+    <canvas id="canvas"></canvas>
+    <script src="code.js"></script>
 </body>
 </html>
-
