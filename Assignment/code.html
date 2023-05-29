@@ -1,24 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Chemistry Simulation</title>
-    <link rel="stylesheet" type="text/css" href="code.css">
+  <title>States of Matter Simulation</title>
+  <link rel="stylesheet" type="text/css" href="code.css">
 </head>
 <body>
-    <div class="controls">
-        <label for="temperatureRange">Temperature:</label>
-        <input type="range" id="temperatureRange" min="0" max="100" value="50">
-        <span id="temperatureValue">50</span>
-
-        <label for="stateSelect">State of Matter:</label>
-        <select id="stateSelect">
-            <option value="solid">Solid</option>
-            <option value="liquid">Liquid</option>
-            <option value="gas">Gas</option>
-        </select>
+  <div id="simulation">
+    <div id="container">
+      <div id="solid" class="state"></div>
+      <div id="liquid" class="state"></div>
+      <div id="gas" class="state"></div>
     </div>
-
-    <canvas id="canvas"></canvas>
-    <script src="code.js"></script>
+    <div id="buttons">
+      <button id="solidBtn" class="active" onclick="changeState('solid')">Solid</button>
+      <button id="liquidBtn" onclick="changeState('liquid')">Liquid</button>
+      <button id="gasBtn" onclick="changeState('gas')">Gas</button>
+    </div>
+  </div>
+  
+  <script src="code.js"></script>
 </body>
 </html>
