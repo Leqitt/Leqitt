@@ -1,207 +1,116 @@
-function changeState(state) {
-  // Hides all states
-  const states = document.getElementsByClassName('state');
-  for (let i = 0; i < states.length; i++) {
-    states[i].style.display = 'none';
-    states[i].innerHTML = ''; // Clears existing particles
-  }
+var container = document.getElementById('container');
+var particles = [];
+var particleCount = 0;
+var particleSize = 10; // Particle size in pixels
+var currentState = 'solid';
+var isSimulationRunning = false;
 
-  // Deactivates all buttons
-  const buttons = document.getElementsByTagName('button');
-  for (let i = 0; i < buttons.length; i++) {
-    buttons[i].classList.remove('active');
-  }
+// Function to create particles
+function createParticles() {
+  var rows = Math.floor(Math.sqrt(particleCount)); // Number of rows
+  var cols = Math.ceil(particleCount / rows); // Number of columns
+  var containerWidth = container.offsetWidth;
+  var containerHeight = container.offsetHeight;
+  var padding = 5; // Padding between particles
 
-  // Shows the selected state
-  const selectedState = document.getElementById(state);
-  selectedState.style.display = 'block';
+  for (var i = 0; i < rows; i++) {
+    for (var j = 0; j < cols; j++) {
+      if (particles.length >= particleCount) {
+        break;
+      }
 
-  // Activates the corresponding button
-  document.getElementById(state + 'Btn').classList.add('active');
+      var particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = (j * (particleSize + padding)) + 'px';
+      particle.style.top = (i * (particleSize + padding)) + 'px';
 
-  // Creates particles based on the selected state
-  if (state === 'solid') {
-    createSolidParticles(selectedState);
-  } else if (state === 'liquid') {
-    createLiquidParticles(selectedState);
-  } else if (state === 'gas') {
-    createGasParticles(selectedState);
-  }
-}
+      // Check for overlapping particles
+      var overlap = particles.some(function(existingParticle) {
+        var existingX = parseInt(existingParticle.style.left, 10);
+        var existingY = parseInt(existingParticle.style.top, 10);
+        var dx = Math.abs(existingX - parseInt(particle.style.left, 10));
+        var dy = Math.abs(existingY - parseInt(particle.style.top, 10));
 
-// Collision Code
-function Particle(x, y, dx, dy, size, container) {
-  this.x = x;
-  this.y = y;
-  this.dx = dx;
-  this.dy = dy;
-  this.size = size;
-  this.containerWidth = container.offsetWidth;
-  this.containerHeight = container.offsetHeight;
-  
-  this.element = document.createElement('div');
-  this.element.classList.add('particle');
-  this.element.style.width = `${this.size}px`;
-  this.element.style.height = `${this.size}px`;
-  container.appendChild(this.element);
-  
-  this.updatePosition = function() {
-    this.x += this.dx;
-    this.y += this.dy;
-    
-    this.element.style.transform = `translate(${this.x}px, ${this.y}px)`;
-  }
-  
-  this.checkCollision = function(particles) {
-    for (let i = 0; i < particles.length; i++) {
-      const particle = particles[i];
-  
-      if (particle !== this) {
-        const dx = this.x - particle.x;
-        const dy = this.y - particle.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-  
-        if (distance < this.size + particle.size) {
-          const angle = Math.atan2(dy, dx);
-          const targetAngle = angle + Math.PI;
-          const sin = Math.sin(targetAngle);
-          const cos = Math.cos(targetAngle);
-  
-          const overlap = this.size + particle.size - distance;
-  
-          this.x += overlap * cos * 0.5;
-          this.y += overlap * sin * 0.5;
-  
-          particle.x -= overlap * cos * 0.5;
-          particle.y -= overlap * sin * 0.5;
-  
-          const relativeVelocityX = this.dx - particle.dx;
-          const relativeVelocityY = this.dy - particle.dy;
-          const dotProduct = dx * relativeVelocityX + dy * relativeVelocityY;
-  
-          if (dotProduct > 0) {
-            const totalMass = this.size + particle.size;
-            const impulseX = (2 * dotProduct * dx) / (distance * totalMass);
-            const impulseY = (2 * dotProduct * dy) / (distance * totalMass);
-  
-            this.dx -= impulseX / this.size;
-            this.dy -= impulseY / this.size;
-  
-            particle.dx += impulseX / particle.size;
-            particle.dy += impulseY / particle.size;
-          }
-        }
+        return (dx < particleSize && dy < particleSize);
+      });
+
+      if (!overlap) {
+        container.appendChild(particle);
+        particles.push(particle);
       }
     }
   }
+}
 
-  this.checkContainerCollision = function() {
-    if (this.x - this.size <= 0 || this.x + this.size >= this.containerWidth) {
-      this.dx = -this.dx;
-    }
-    
-    if (this.y - this.size <= 0 || this.y + this.size >= this.containerHeight) {
-      this.dy = -this.dy;
-    }
+// Function to update particle positions
+function updateParticles() {
+  var containerWidth = container.offsetWidth;
+  var containerHeight = container.offsetHeight;
+
+  particles.forEach(function(particle) {
+    var x = Math.random() * (containerWidth - particleSize);
+    var y = Math.random() * (containerHeight - particleSize);
+
+    particle.style.left = x + 'px';
+    particle.style.top = y + 'px';
+  });
+
+  // Stop the simulation
+  stopSimulation();
+}
+
+// Function to start the simulation
+function startSimulation() {
+  if (!isSimulationRunning) {
+    isSimulationRunning = true;
+    updateParticles();
   }
 }
 
-// Creates the Particles for each state
-function createSolidParticles(container) {
-  const containerWidth = container.offsetWidth;
-  const containerHeight = container.offsetHeight;
-  const particleSize = 5;
-  const particleSpacing = 5;
-  const particlesPerRow = 10;
-  const particlesPerColumn = 10;
-
-  const startX = (containerWidth - particlesPerRow * (particleSize + particleSpacing) + particleSpacing) / 2;
-  const startY = (containerHeight - particlesPerColumn * (particleSize + particleSpacing) + particleSpacing) / 2;
-
-  const particles = [];
-
-  for (let i = 0; i < particlesPerColumn; i++) {
-    for (let j = 0; j < particlesPerRow; j++) {
-      const x = startX + j * (particleSize + particleSpacing);
-      const y = startY + i * (particleSize + particleSpacing);
-
-      const particle = new Particle(x, y, 0, 0, particleSize, container);
-      particles.push(particle);
-    }
-  }
-
-  setInterval(updateSolidParticles, 10, particles, containerWidth, containerHeight);
+// Function to stop the simulation
+function stopSimulation() {
+  isSimulationRunning = false;
 }
 
-function updateSolidParticles(particles, containerWidth, containerHeight) {
-  for (let i = 0; i < particles.length; i++) {
-    const particle = particles[i];
-    
-    particle.checkContainerCollision();
-    particle.checkCollision(particles);
-    
-    particle.updatePosition();
+// Function to change the state of matter
+function changeState(state) {
+  currentState = state;
+
+  // Remove existing particles
+  particles.forEach(function(particle) {
+    container.removeChild(particle);
+  });
+  particles = [];
+
+  // Set particle count based on the state
+  switch (currentState) {
+    case 'solid':
+      particleCount = 50;
+      break;
+    case 'liquid':
+      particleCount = 30;
+      break;
+    case 'gas':
+      particleCount = 15;
+      break;
   }
+
+  createParticles();
+  startSimulation();
 }
 
-function createLiquidParticles(container) {
-  const containerWidth = container.offsetWidth;
-  const containerHeight = container.offsetHeight;
-  const particleCount = 50;
-  const particles = [];
-  
-  for (let i = 0; i < particleCount; i++) {
-    const x = Math.random() * (containerWidth - 10);
-    const y = Math.random() * (containerHeight - 10);
-    const dx = Math.random() * 2 - 1;
-    const dy = Math.random() * 2 - 1;
-    const size = 5;
-    
-    const particle = new Particle(x, y, dx, dy, size, container);
-    particles.push(particle);
-  }
-  
-  setInterval(updateLiquidParticles, 10, particles, containerWidth, containerHeight);
-}
+// Initialize the simulation
+createParticles();
 
-function updateLiquidParticles(particles, containerWidth, containerHeight) {
-  for (let i = 0; i < particles.length; i++) {
-    const particle = particles[i];
-    
-    particle.checkContainerCollision();
-    particle.checkCollision(particles);
-    
-    particle.updatePosition();
-  }
-}
+// Event listeners for state buttons
+document.getElementById('solid').addEventListener('click', function() {
+  changeState('solid');
+});
 
-function createGasParticles(container) {
-  const containerWidth = container.offsetWidth;
-  const containerHeight = container.offsetHeight;
-  const particleCount = 20;
-  const particles = [];
-  
-  for (let i = 0; i < particleCount; i++) {
-    const x = Math.random() * (containerWidth - 10);
-    const y = Math.random() * (containerHeight - 10);
-    const dx = Math.random() * 4 - 2;
-    const dy = Math.random() * 4 - 2;
-    const size = 5;
-    
-    const particle = new Particle(x, y, dx, dy, size, container);
-    particles.push(particle);
-  }
-  
-  setInterval(updateGasParticles, 10, particles, containerWidth, containerHeight);
-}
+document.getElementById('liquid').addEventListener('click', function() {
+  changeState('liquid');
+});
 
-function updateGasParticles(particles, containerWidth, containerHeight) {
-  for (let i = 0; i < particles.length; i++) {
-    const particle = particles[i];
-    
-    particle.checkContainerCollision();
-    particle.checkCollision(particles);
-    
-    particle.updatePosition();
-  }
-}
+document.getElementById('gas').addEventListener('click', function() {
+  changeState('gas');
+});

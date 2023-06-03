@@ -2,22 +2,23 @@
 <html>
 <head>
   <title>States of Matter Simulation</title>
-  <link rel="stylesheet" type="text/css" href="code.css">
+  <link rel="stylesheet" href="code.css">
 </head>
 <body>
-  <div id="simulation">
-    <div id="container">
-      <div id="solid" class="state"></div>
-      <div id="liquid" class="state"></div>
-      <div id="gas" class="state"></div>
+  <div class="container">
+    <h1>State of Matter Simulation</h1>
+    <div class="content">
+      <div id="simulation">
+        <div id="container"></div>
+      </div>
+      <div id="buttons">
+        <button id="solid">Solid</button>
+        <button id="liquid">Liquid</button>
+        <button id="gas">Gas</button>
+      </div>
     </div>
-    <div id="buttons">
-      <button id="solidBtn" class="active" onclick="changeState('solid')">Solid</button>
-      <button id="liquidBtn" onclick="changeState('liquid')">Liquid</button>
-      <button id="gasBtn" onclick="changeState('gas')">Gas</button>
-    </div>
-  </div>
-  
+  </div>  
+
   <script src="code.js"></script>
 </body>
 </html>
