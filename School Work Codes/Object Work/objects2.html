@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Object basics: Task 2</title>
+    <style>
+      p {
+        color: purple;
+        margin: 0.5em 0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+    </style>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+
+  <body>
+
+    <section class="preview">
+
+
+
+    </section>
+
+  </body>
+  <script>
+    let bandInfo;
+
+    // Add your code here
+    const band = {
+        name: "Coldplay",
+        nationality: "British",
+        genre: "Rock",
+        members: "4",
+        formed: "1997",
+        split: "false",
+        albums: [
+            {
+                name: "Music of Spheres",
+                released: "2021"
+            },
+            {
+                name: "Parachutes",
+                released: "2000"
+            },
+            {
+                name: "Viva la Vida",
+                released: "2008"
+            },
+            {
+                name: "Ghost Stories",
+                released: "2014"
+            },
+        ]
+    }
+
+    bandInfo = `The ${band.nationality} ${band.name} is a ${band.members} member ${band.rock} band. Active from ${band.formed}-${band.split}. There first album ${band.albums[0].name} was released in ${band.albums[0].released}`;
+
+    // Don't edit the code below here!
+
+    const section = document.querySelector('section');
+    let para1 = document.createElement('p');
+    para1.textContent = bandInfo;
+    section.appendChild(para1);
+  </script>
+
+</html>
