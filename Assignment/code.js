@@ -1,4 +1,4 @@
-var container = document.getElementById('container');
+const container = document.getElementById('container');
 var particles = [];
 var particleCount = 0;
 var particleSize = 10; // Particle size in pixels
