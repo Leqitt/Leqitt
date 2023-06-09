@@ -1,24 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>States of Matter Simulation</title>
-  <link rel="stylesheet" href="code.css">
+    <title>State of Matter Simulation</title>
+    <link rel="stylesheet" type="text/css" href="code.css">
 </head>
 <body>
-  <div class="container">
     <h1>State of Matter Simulation</h1>
-    <div class="content">
-      <div id="simulation">
-        <div id="container"></div>
-      </div>
-      <div id="buttons">
-        <button id="solid">Solid</button>
-        <button id="liquid">Liquid</button>
-        <button id="gas">Gas</button>
-      </div>
+    
+    <div id="container"></div>
+    
+    <div id="buttons">
+        <button onclick="changeState('solid')">Solid</button>
+        <button onclick="changeState('liquid')">Liquid</button>
+        <button onclick="changeState('gas')">Gas</button>
     </div>
-  </div>  
-
-  <script src="code2.js"></script>
+    
+    <script src="code2.js"></script>
 </body>
 </html>
