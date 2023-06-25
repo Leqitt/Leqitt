@@ -1,42 +1,66 @@
-body {
-  font-family: Arial, sans-serif;
-}
-
 #container {
-  position: relative;
   width: 400px;
   height: 400px;
-  margin: 0 auto;
-  border: 1px solid #000;
-  background-color: #f0f0f0;
+  border: 2px solid black;
+  position: relative;
+  margin-right: 20px;
 }
 
-#container .particle {
+h1 {
+  text-align: center;
+  margin-top: 20px;
+  margin-right: 60px;
+}
+
+.particle {
   position: absolute;
-  width: 20px;
-  height: 20px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background-color: #ff0000;
+  background-color: #000;
 }
 
-#container .particle.state-gas {
-  background-color: #00ff00;
+#solid {
+  top: 430px;
+  left: 20px;
 }
 
-#container .particle.state-liquid {
-  background-color: #0000ff;
+#liquid {
+  top: 430px;
+  left: 90px;
 }
 
-#container .particle.state-solid {
-  background-color: #ffff00;
+#gas {
+  top: 430px;
+  left: 160px;
 }
 
 #buttons {
-  float: right;
-  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  top: 50%;
+  right: 10px; /* Adjust the value to position the buttons as desired */
+  transform: translateY(-50%);
+  margin-top: 130px;
 }
 
-#buttons button {
-  display: block;
-  margin-bottom: 10px;
+button {
+  margin-top: 10px;
+}
+
+#simulation {
+  position: relative;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  flex-direction: column;
+}
+
+.content {
+  display: flex;
 }

@@ -1,102 +1,168 @@
-var container = document.getElementById('container');
-var particles = [];
-
-function createParticle() {
-  var particle = document.createElement('div');
-  particle.className = 'particle';
-  container.appendChild(particle);
-
-  var containerRect = container.getBoundingClientRect();
-  var particleSize = 20;
-  var left = Math.random() * (containerRect.width - particleSize);
-  var top = Math.random() * (containerRect.height - particleSize);
-  var speedX = (Math.random() - 0.5) * 2; // Random speed along X-axis
-  var speedY = (Math.random() - 0.5) * 2; // Random speed along Y-axis
-
-  particle.style.left = left + 'px';
-  particle.style.top = top + 'px';
-  particle.speedX = speedX;
-  particle.speedY = speedY;
-
-  particles.push(particle);
-}
-
-function updateParticles() {
-  for (var i = 0; i < particles.length; i++) {
-    var particle = particles[i];
-    var particleSize = particle.offsetWidth;
-
-    // Update position
-    particle.style.left = particle.offsetLeft + particle.speedX + 'px';
-    particle.style.top = particle.offsetTop + particle.speedY + 'px';
-
-    var containerRect = container.getBoundingClientRect();
-    var containerWidth = containerRect.width;
-    var containerHeight = containerRect.height;
-
-    // Check collision with container boundaries
-    if (
-      particle.offsetLeft <= 0 ||
-      particle.offsetLeft + particleSize >= containerWidth
-    ) {
-      particle.speedX = -particle.speedX;
+// Particle class
+class Particle {
+    constructor(x, y, radius, color) {
+      this.x = x;
+      this.y = y;
+      this.radius = radius;
+      this.color = color;
+      this.velocity = {
+        x: (Math.random() - 0.5) * 2, // Random initial velocity
+        y: (Math.random() - 0.5) * 2 // Random initial velocity
+      };
     }
-    if (
-      particle.offsetTop <= 0 ||
-      particle.offsetTop + particleSize >= containerHeight
-    ) {
-      particle.speedY = -particle.speedY;
+  
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+      ctx.fillStyle = this.color;
+      ctx.fill();
+      ctx.closePath();
     }
-
-    // Check collision with other particles
-    for (var j = i + 1; j < particles.length; j++) {
-      var otherParticle = particles[j];
-      if (checkCollision(particle, otherParticle)) {
-        // Calculate new speeds after collision
-        var tempSpeedX = particle.speedX;
-        var tempSpeedY = particle.speedY;
-        particle.speedX = otherParticle.speedX;
-        particle.speedY = otherParticle.speedY;
-        otherParticle.speedX = tempSpeedX;
-        otherParticle.speedY = tempSpeedY;
+  
+    update() {
+      this.x += this.velocity.x;
+      this.y += this.velocity.y;
+  
+      // Bounce off the container
+      if (this.x + this.radius > containerWidth || this.x - this.radius < 0) {
+        this.velocity.x *= -1;
       }
+      if (this.y + this.radius > containerHeight || this.y - this.radius < 0) {
+        this.velocity.y *= -1;
+      }
+  
+      // Bounce off other particles
+      particles.forEach(particle => {
+        if (particle === this) return;
+  
+        const dx = this.x - particle.x;
+        const dy = this.y - particle.y;
+        const distance = Math.sqrt(dx ** 2 + dy ** 2);
+  
+        if (distance < this.radius + particle.radius) {
+          // Collision occurred
+          const angle = Math.atan2(dy, dx);
+          const sin = Math.sin(angle);
+          const cos = Math.cos(angle);
+  
+          // Rotate particle positions
+          const pos1 = { x: 0, y: 0 };
+          const pos2 = rotate(dx, dy, sin, cos, true);
+  
+          // Rotate particle velocities
+          const vel1 = rotate(this.velocity.x, this.velocity.y, sin, cos, true);
+          const vel2 = rotate(particle.velocity.x, particle.velocity.y, sin, cos, true);
+  
+          // Perform collision resolution
+          const vxTotal = vel1.x - vel2.x;
+          vel1.x = ((this.radius - particle.radius) * vel1.x + 2 * particle.radius * vel2.x) / (this.radius + particle.radius);
+          vel2.x = vxTotal + vel1.x;
+  
+          // Update positions
+          pos1.x += vel1.x;
+          pos2.x += vel2.x;
+  
+          // Rotate positions back
+          const finalPos1 = rotate(pos1.x, pos1.y, sin, cos, false);
+          const finalPos2 = rotate(pos2.x, pos2.y, sin, cos, false);
+  
+          // Adjust particle positions
+          particle.x = this.x + finalPos2.x;
+          particle.y = this.y + finalPos2.y;
+          this.x = this.x + finalPos1.x;
+          this.y = this.y + finalPos1.y;
+  
+          // Rotate velocities back
+          const finalVel1 = rotate(vel1.x, vel1.y, sin, cos, false);
+          const finalVel2 = rotate(vel2.x, vel2.y, sin, cos, false);
+  
+          // Update particle velocities
+          this.velocity.x = finalVel1.x;
+          this.velocity.y = finalVel1.y;
+          particle.velocity.x = finalVel2.x;
+          particle.velocity.y = finalVel2.y;
+        }
+      });
+  
+      this.draw();
     }
   }
-
-  requestAnimationFrame(updateParticles);
-}
-
-function checkCollision(particle1, particle2) {
-  var rect1 = particle1.getBoundingClientRect();
-  var rect2 = particle2.getBoundingClientRect();
-
-  return (
-    rect1.left < rect2.left + rect2.width &&
-    rect1.left + rect1.width > rect2.left &&
-    rect1.top < rect2.top + rect2.height &&
-    rect1.top + rect1.height > rect2.top
-  );
-}
-
-function changeState(state) {
-  container.innerHTML = '';
-  particles = [];
-
-  var particleCount = 30;
-  if (state === 'liquid') {
-    particleCount = 20;
-  } else if (state === 'gas') {
-    particleCount = 10;
+  
+  // Utility function to rotate positions and velocities
+  function rotate(x, y, sin, cos, reverse) {
+    return {
+      x: (reverse ? x * cos + y * sin : x * cos - y * sin),
+      y: (reverse ? y * cos - x * sin : y * cos + x * sin)
+    };
   }
-
-  for (var i = 0; i < particleCount; i++) {
-    createParticle();
+  
+  // Canvas setup
+  const canvas = document.getElementById('container');
+  const ctx = canvas.getContext('2d');
+  let containerWidth, containerHeight;
+  
+  // Set the container size
+  function setContainerSize() {
+    containerWidth = canvas.offsetWidth;
+    containerHeight = canvas.offsetHeight;
+    canvas.width = containerWidth;
+    canvas.height = containerHeight;
   }
-
-  var particleElements = document.getElementsByClassName('particle');
-  for (var i = 0; i < particleElements.length; i++) {
-    particleElements[i].classList.add('state-' + state);
+  
+  // Particle simulation variables
+  let particles = [];
+  
+  // Add particles to the simulation
+  function addParticles(numParticles) {
+    for (let i = 0; i < numParticles; i++) {
+      const x = Math.random() * (containerWidth - radius * 2) + radius;
+      const y = Math.random() * (containerHeight - radius * 2) + radius;
+      const radius = 10;
+  
+      particles.push(new Particle(x, y, radius, 'rgba(255, 255, 255, 0.7)'));
+    }
   }
-
-  updateParticles();
-}
+  
+  // Animation loop
+  function animate() {
+    ctx.clearRect(0, 0, containerWidth, containerHeight);
+  
+    particles.forEach(particle => {
+      particle.update();
+    });
+  
+    requestAnimationFrame(animate);
+  }
+  
+  // Event listeners for buttons
+  document.getElementById('solid').addEventListener('click', () => {
+    particles = [];
+    addParticles(100); // Amount of particles for solids
+    
+    particles.forEach(particle => {
+      particle.draw();
+    });
+  });
+  
+  document.getElementById('liquid').addEventListener('click', () => {
+    particles = [];
+    addParticles(50); // Amount of particles for solids
+    
+    particles.forEach(particle => {
+      particle.draw();
+    });
+  });
+  
+  document.getElementById('gas').addEventListener('click', () => {
+    particles = [];
+    addParticles(20); // Amount of particles for solids
+    
+    particles.forEach(particle => {
+      particle.draw();
+    });
+  });
+  
+  // Initialize the simulation
+  setContainerSize();
+  addParticles(100);
+  animate();
