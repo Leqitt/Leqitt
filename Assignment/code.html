@@ -1,25 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Particle Simulation</title>
-  <link rel="stylesheet" href="code.css">
+    <link rel="stylesheet" type="text/css" href="code.css">
 </head>
 <body>
-  <h1>Particle Simulation</h1>
-  <p>Select a state of matter and adjust the temperature to see how the particles behave.</p>
-  <div class="buttons">
-    <button id="solid" onclick="changeState('solid')">Solid</button>
-    <button id="liquid" onclick="changeState('liquid')">Liquid</button>
-    <button id="gas" onclick="changeState('gas')">Gas</button>
-  </div>
-  <div class="slider">
-    <label for="temp">Temperature:</label>
-    <input type="range" id="temp" min="0" max="100" value="50" onchange="changeTemp(this.value)">
-    <span id="temp-value">50</span>
-  </div>
-  <div id="container">
-    <!-- The particles will be created here -->
-  </div>
-  <script src="code2.js"></script>
+    <h1>Particle Simulation</h1>
+    <button id="toggle-info">Show Info</button>
+    <div id="info" style="display: none;">
+        <p>This simulation shows how particles behave in the three states of matter: solid, liquid and gas. Use the buttons to switch between the different states and the slider to adjust the temperature. The higher the temperature, the faster the particles will move.</p>
+    </div>
+    <div id="container"></div>
+    <div id="controls">
+        <button id="solid"></button>
+        <button id="liquid"></button>
+        <button id="gas"></button><br>
+        <label for="temperature">Temperature:</label>
+        <input type="range" min="0" max="100" value="0" id="temperature">
+        <span id="temperature-value">0</span>
+    </div>
+    <script src="code2.js"></script>
 </body>
 </html>
