@@ -1,19 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>Particle Simulation</title>
     <link rel="stylesheet" type="text/css" href="code.css">
 </head>
 <body>
     <h1>Particle Simulation</h1>
     <button id="toggle-info">Show Info</button>
     <div id="info" style="display: none;">
-        <p>This simulation shows how particles behave in the three states of matter: solid, liquid and gas. Use the buttons to switch between the different states and the slider to adjust the temperature. The higher the temperature, the faster the particles will move.</p>
+        <p>This simulation shows how particles behave in the three states of matter: solid, liquid, gas and how temperature affects them. Use the buttons to switch between the different states and the slider to adjust the temperature and see what happens!.</p>
     </div>
     <div id="container"></div>
     <div id="controls">
-        <button id="solid"></button>
-        <button id="liquid"></button>
-        <button id="gas"></button><br>
+        <button id="solid">
+            <img src="solid.png" alt="buttonpng" border="0" />
+        </button>
+        <button id="liquid">
+            <img src="liquid.png" alt="buttonpng" border="0" />
+        </button>
+        <button id="gas">
+            <img src="gas.png" alt="buttonpng" border="0" />
+        </button><br>
         <label for="temperature">Temperature:</label>
         <input type="range" min="0" max="100" value="0" id="temperature">
         <span id="temperature-value">0</span>
